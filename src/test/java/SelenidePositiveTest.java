@@ -1,3 +1,4 @@
+import com.codeborne.selenide.Condition;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -25,12 +26,14 @@ public class SelenidePositiveTest {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("Москва");
         $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT,Keys.HOME),Keys.BACK_SPACE);
-        $("[data-test-id='date'] input").setValue("14.10.2022");
+        $("[data-test-id='date'] input").setValue(date);
         $("[data-test-id='name'] input").setValue("Толстой Лев");
         $("[data-test-id='phone'] input").setValue("+79999999999");
         $("[data-test-id='agreement']").click();
         $$("button").find(exactText("Забронировать")).click();
-        $(withText("Встреча успешно забронирована на")).shouldBe(visible, Duration.ofSeconds(12));
+        $(".notification__content")
+                .shouldHave(Condition.text("Встреча успешно забронирована на " + date), Duration.ofSeconds(15))
+                .shouldBe(Condition.visible);
 
     }
 
